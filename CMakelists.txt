@@ -1,0 +1,28 @@
+cmake_minimum_required(VERSION 3.10)
+
+project(linemt4)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+include_directories(include/)
+
+add_library(linemt4 SHARED main.cpp
+audio.cpp
+bana.cpp
+compress.cpp
+gl.cpp
+hasp.cpp
+input.cpp
+mq.cpp
+net.cpp
+touch.cpp
+window.cpp
+yac.cpp
+
+shared/config.cpp
+shared/input.cpp
+shared/line.cpp
+)
+
+target_link_libraries(linemt4 ${CMAKE_SOURCE_DIR}/lib/libSDL2.dll.a z opengl32 gdi32)

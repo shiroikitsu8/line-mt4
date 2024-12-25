@@ -1,0 +1,93 @@
+# Keyboard
+# keyboard values are SDL_Keycode integer values
+# https://wiki.libsdl.org/SDL2/SDLKeycodeLookup
+
+# Controller Axis
+# controller_axis values are SDL_GameControllerAxis integer values
+# controller_axis_full are either true/false boolean values
+# controller_axis_reversed are either true/false boolean values
+
+# Controller Button
+# controller_button values are SDL_GameControllerButton integer values
+
+[[brakes]] # S
+keyboard = 115
+
+[[brakes]] # Left Trigger
+controller_axis = 4
+
+[[card]] # C
+keyboard = 99
+
+[[card]] # X Button
+controller_button = 2
+
+[[gas]] # W
+keyboard = 119
+
+[[gas]] # Right Trigger
+controller_axis = 5
+
+[[interrupt]] # Q
+keyboard = 113
+
+[[interrupt]] # A Button
+controller_button = 0
+
+[[shift_down]] # O
+keyboard = 111
+
+[[shift_down]] # Left Shoulder
+controller_button = 9
+
+[[shift_up]] # P
+keyboard = 112
+
+[[shift_up]] # Right Shoulder
+controller_button = 10
+
+[[test]] # Left Arrow
+keyboard = 1073741904
+
+[[test]] # Left DPad
+controller_button = 13
+
+[[test_down]] # Down Arrow
+keyboard = 1073741905
+
+[[test_down]] # Down DPad
+controller_button = 12
+
+[[test_enter]] # Right Arrow
+keyboard = 1073741903
+
+[[test_enter]] # Right DPad
+controller_button = 14
+
+[[test_up]] # Up Arrow
+keyboard = 1073741906
+
+[[test_up]] # Up DPad
+controller_button = 11
+
+[[view_change]] # E
+keyboard = 101
+
+[[view_change]] # A Button
+controller_button = 3
+
+[[wheel]] # Left Stick
+controller_axis = 0
+controller_axis_full = true
+
+[[wheel_left]] # A
+keyboard = 97
+
+[[wheel_right]] # D
+keyboard = 100
+
+[[service]] # T
+keyboard = 116
+
+[[coin]] # R
+keyboard = 114

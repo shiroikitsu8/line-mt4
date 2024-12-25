@@ -1,0 +1,20 @@
+# terminal mode
+terminal = false
+
+# set camera to a static picture (camera.png and camera_event.png)
+camera = true
+
+# whether to use terminal proxy
+terminal_proxy = false
+
+[bana]
+enabled = true
+access_code = '30730273167899430416'
+chip_id = '00000000000000000000000000000000'
+
+[input]
+enabled = true
+background = false
+
+[touch]
+enabled = true
