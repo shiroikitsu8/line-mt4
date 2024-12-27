@@ -10,8 +10,10 @@ bool window_ready = false;
 void window_thread()
 {
     SDL_Window *window = SDL_CreateWindow("NU Next Generation", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1360, 768, 0);
-    if (!window)
+    if (!window) {
+        printf("Error creating window\n");
         return;
+    }
 
     SDL_SysWMinfo wmInfo;
     SDL_VERSION(&wmInfo.version);
@@ -57,5 +59,6 @@ void window_init()
     t.detach();
     while (!window_ready)
     {
+        Sleep(10);
     }
 }

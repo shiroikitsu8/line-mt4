@@ -466,6 +466,7 @@ void gl_init(void *hWnd_)
     int version = gladLoaderLoadGL();
     if (!version)
     {
+        printf("error loading glad\n");
         wglMakeCurrent(NULL, NULL);
         wglDeleteContext(temp_context);
         ReleaseDC(hWnd, hdc);
