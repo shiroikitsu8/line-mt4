@@ -189,7 +189,7 @@ uint32_t terminalAddress = 0;
 
 bool isMessagePacket(uint8_t *data)
 {
-    return data[0] == 0 || data[0] == 1 || data[0] == 2;
+    return data[0] == 0 || data[0] == 1 || data[0] == 2 || data[0] == 5;
 }
 
 int(__cdecl *old_bind)(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
