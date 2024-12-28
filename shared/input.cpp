@@ -142,7 +142,10 @@ void on_skibidi_input(InputEvent *event)
         }
         else
         {
-            value_float = float(event->controllerAxis) / float(SDL_JOYSTICK_AXIS_MAX); // make it 0.f - 1.f
+            uint16_t v = event->controllerAxis;
+            if (event->keybind->controllerAxisReversedHalf)
+                v = UINT16_MAX - v;
+            value_float = float((int16_t)v) / float(SDL_JOYSTICK_AXIS_MAX); // make it 0.f - 1.f
         }
         if (value_float < 0.f)
             value_float = 0.f;
@@ -508,6 +511,8 @@ void input_config_read(toml::table config)
                     newBind.controllerAxisFull = true;
                 if (keyConfig["controller_axis_reversed"].is_boolean() && keyConfig["controller_axis_reversed"].as_boolean()->get())
                     newBind.controllerAxisReversed = true;
+                if (keyConfig["controller_axis_reversed_half"].is_boolean() && keyConfig["controller_axis_reversed_half"].as_boolean()->get())
+                    newBind.controllerAxisReversedHalf = true;
 
                 bool keybindExists = false;
                 for (const InputKeybind &bind : inputs[i].keybinds)
@@ -568,6 +573,8 @@ toml::table input_config_write()
                     keyConfig.insert_or_assign("controller_axis_full", true);
                 if (keybind.controllerAxisReversed)
                     keyConfig.insert_or_assign("controller_axis_reversed", true);
+                if (keybind.controllerAxisReversedHalf)
+                    keyConfig.insert_or_assign("controller_axis_reversed_half", true);
                 break;
             }
             case InputKeybindType::CONTROLLER_BUTTON:

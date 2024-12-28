@@ -51,6 +51,7 @@ struct InputKeybind
     };
     bool controllerAxisFull = false;
     bool controllerAxisReversed = false;
+    bool controllerAxisReversedHalf = false;
 };
 
 struct Input
