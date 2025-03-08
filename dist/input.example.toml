@@ -46,6 +46,27 @@ keyboard = 112
 [[shift_up]] # Right Shoulder
 controller_button = 10
 
+[[gear_one]]
+keyboard = 49
+
+[[gear_two]]
+keyboard = 50
+
+[[gear_three]]
+keyboard = 51
+
+[[gear_four]]
+keyboard = 52
+
+[[gear_five]]
+keyboard = 53
+
+[[gear_six]]
+keyboard = 54
+
+[[gear_neutral]]
+keyboard = 55
+
 [[test]] # Left Arrow
 keyboard = 1073741904
 

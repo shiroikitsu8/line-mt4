@@ -1,4 +1,6 @@
 #include "input.h"
+#include <thread>
+#include <chrono>
 
 float gas_value = 0;
 float brakes_value = 0;
@@ -24,6 +26,10 @@ bool service_value = false;
 
 bool coin_value = false;
 
+// For controller fix
+bool keyShiftPressed = false;
+int keyTestPressed = 0;
+
 std::vector<Input> inputs = {
     {"gas", "Gas", InputType::GAS, {InputKeybindType::KEYBOARD, InputKeybindType::CONTROLLER_AXIS}},
     {"brakes", "Brakes", InputType::BRAKES, {InputKeybindType::KEYBOARD, InputKeybindType::CONTROLLER_AXIS}},
@@ -42,6 +48,14 @@ std::vector<Input> inputs = {
 
     {"shift_down", "Shift Down", InputType::SHIFT_DOWN, {InputKeybindType::KEYBOARD, InputKeybindType::CONTROLLER_BUTTON}},
     {"shift_up", "Shift Up", InputType::SHIFT_UP, {InputKeybindType::KEYBOARD, InputKeybindType::CONTROLLER_BUTTON}},
+
+    {"gear_one", "Shift Up", InputType::GEAR_ONE, {InputKeybindType::KEYBOARD, InputKeybindType::CONTROLLER_BUTTON}},
+    {"gear_two", "Shift Up", InputType::GEAR_TWO, {InputKeybindType::KEYBOARD, InputKeybindType::CONTROLLER_BUTTON}},
+    {"gear_three", "Shift Up", InputType::GEAR_THREE, {InputKeybindType::KEYBOARD, InputKeybindType::CONTROLLER_BUTTON}},
+    {"gear_four", "Shift Up", InputType::GEAR_FOUR, {InputKeybindType::KEYBOARD, InputKeybindType::CONTROLLER_BUTTON}},
+    {"gear_five", "Shift Up", InputType::GEAR_FIVE, {InputKeybindType::KEYBOARD, InputKeybindType::CONTROLLER_BUTTON}},
+    {"gear_six", "Shift Up", InputType::GEAR_SIX, {InputKeybindType::KEYBOARD, InputKeybindType::CONTROLLER_BUTTON}},
+    {"gear_neutral", "Shift Up", InputType::GEAR_NEUTRAL, {InputKeybindType::KEYBOARD, InputKeybindType::CONTROLLER_BUTTON}},
 
     {"card", "Card", InputType::CARD, {InputKeybindType::KEYBOARD, InputKeybindType::CONTROLLER_BUTTON}},
 
@@ -218,28 +232,82 @@ void on_skibidi_input(InputEvent *event)
 
     case InputType::TEST: // can only be button
     {
-        if (value_bool)
+        if (event->keybind->type == InputKeybindType::CONTROLLER_BUTTON)
+        {
+            keyTestPressed++;
+            if(keyTestPressed % 4 == 0 && keyTestPressed != 0)
+            {
+                test_value = !test_value;
+                keyTestPressed = 0;
+            }
+        }
+        else if(value_bool)
+        {
             test_value = !test_value;
+        }
         break;
     }
 
     case InputType::SHIFT_DOWN: // can only be button
     {
-        if (value_bool)
+        if(value_bool)
         {
-            gear_value--;
-            if (gear_value < 0)
-                gear_value = 0;
+            if ((!keyShiftPressed && event->keybind->type == InputKeybindType::CONTROLLER_BUTTON) ||
+                event->keybind->type != InputKeybindType::CONTROLLER_BUTTON)
+            {
+                keyShiftPressed = true;
+                gear_value--;
+                if (gear_value < 0)
+                    gear_value = 0;
+            }
         }
         break;
     }
     case InputType::SHIFT_UP: // can only be button
     {
-        if (value_bool)
+        if(value_bool)
         {
-            gear_value++;
-            if (gear_value > 6)
+            if ((!keyShiftPressed && event->keybind->type == InputKeybindType::CONTROLLER_BUTTON) ||
+                event->keybind->type != InputKeybindType::CONTROLLER_BUTTON)
+            {
+                keyShiftPressed = true;
+                gear_value++;
+                if (gear_value > 6)
+                    gear_value = 6;
+            }
+        }
+        break;
+    }
+
+    case InputType::GEAR_ONE:
+    case InputType::GEAR_TWO:
+    case InputType::GEAR_THREE:
+    case InputType::GEAR_FOUR:
+    case InputType::GEAR_FIVE:
+    case InputType::GEAR_SIX:
+    case InputType::GEAR_NEUTRAL: // can only be button
+    {
+        if(value_bool)
+        {
+            if(event->input->type == InputType::GEAR_ONE)
+                gear_value = 1;
+            else if(event->input->type == InputType::GEAR_TWO)
+                gear_value = 2;
+            else if(event->input->type == InputType::GEAR_THREE)
+                gear_value = 3;
+            else if(event->input->type == InputType::GEAR_FOUR)
+                gear_value = 4;
+            else if(event->input->type == InputType::GEAR_FIVE)
+                gear_value = 5;
+            else if(event->input->type == InputType::GEAR_SIX)
                 gear_value = 6;
+            else if(event->input->type == InputType::GEAR_NEUTRAL)
+                gear_value = 0;
+
+            std::thread([gear_ptr = &gear_value]() {
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                *gear_ptr = 0;
+            }).detach();
         }
         break;
     }
@@ -444,6 +512,10 @@ void input_sdl(const SDL_Event &event)
                 on_skibidi_input(&e);
             }
         }
+
+        if(event.type == SDL_CONTROLLERBUTTONUP)
+            keyShiftPressed = false;
+        
         break;
     }
     case SDL_CONTROLLERDEVICEADDED:

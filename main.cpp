@@ -210,8 +210,8 @@ extern "C"
             Line::Hook((void *)0x89e5c80, (void *)send_command);
 
             // mucha
-            Line::PatchString((void *)0x8c11004, "mucha.local");
-            Line::PatchString((void *)0x8c11028, "mucha.local"); // cn
+            Line::PatchString((void *)0x8c11004, config.ipAddress.c_str());
+            Line::PatchString((void *)0x8c11028, config.ipAddress.c_str()); // cn
 
             // disable ssl verify
             Line::Patch((void *)0x8ae1f20, {0x90, 0x90, 0x90}); // test byte ptr [edx],01 nop

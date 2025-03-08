@@ -31,6 +31,14 @@ enum class InputType
     SHIFT_UP,
     SHIFT_DOWN,
 
+    GEAR_ONE,
+    GEAR_TWO,
+    GEAR_THREE,
+    GEAR_FOUR,
+    GEAR_FIVE,
+    GEAR_SIX,
+    GEAR_NEUTRAL,
+
     CARD,
     
     SERVICE,

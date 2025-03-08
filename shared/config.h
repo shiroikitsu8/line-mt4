@@ -6,8 +6,9 @@ struct Config {
     bool terminalProxy;
     
     bool bana;
-    char accessCode[24];
-    char chipId[36];
+    bool autoScan;
+    std::string accessCode;
+    std::string chipId;
 
     bool input;
     bool inputBackground;
@@ -15,6 +16,8 @@ struct Config {
     bool touch;
     
     bool yac;
+
+    std::string ipAddress;
     
     void load();
     void save();

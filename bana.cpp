@@ -3,6 +3,8 @@
 #include "shared/line.h"
 #include "shared/input.h"
 #include "shared/config.h"
+#include <windows.h>
+#include <filesystem>
 
 #pragma push(pack, 1)
 enum BngRwIdType
@@ -87,6 +89,58 @@ struct BanaState
 
 BanaState BANA_STATE[2];
 
+static void randomHex(char str[], int length)
+{
+	//hexadecimal characters
+	char hexCharacterTable[] = { '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F' };
+	srand(time(NULL));
+	int i;
+	for (i = 0; i < length; i++)
+	{
+		str[i] = hexCharacterTable[rand() % 16];
+	}
+	str[length] = 0;
+}
+
+static void randomNumberString(char str[], int length)
+{
+	char CharacterTable[] = { '0','1','2','3','4','5','6','7','8','9' };
+	srand(time(NULL));
+	int i;
+	for (i = 0; i < length; i++)
+	{
+		str[i] = CharacterTable[rand() % 10];
+	}
+	str[length] = 0;
+}
+
+static std::string getProfileString(LPCSTR name, LPCSTR key, LPCSTR def, LPCSTR filename)
+{
+	char temp[1024];
+	int result = GetPrivateProfileStringA(name, key, def, temp, sizeof(temp), filename);
+	return std::string(temp, result);
+}
+
+static void createCard()
+{
+	if (std::filesystem::exists(".\\card.ini"))
+	{
+		printf("Card.ini found!\n");
+	}
+	else 
+	{
+		char generatedAccessCode[21] = "00000000000000000000";
+		randomNumberString(generatedAccessCode, 20);
+		WritePrivateProfileStringA("card", "accessCode", generatedAccessCode, ".\\card.ini");
+
+		char generatedChipId[33] = "00000000000000000000000000000000";
+		randomHex(generatedChipId, 32);
+		WritePrivateProfileStringA("card", "chipId", generatedChipId, ".\\card.ini");
+
+		printf("New card generated\n");
+	}
+}
+
 struct Sys_Device_IcCard_impl
 {
 	char pad[36];
@@ -99,6 +153,7 @@ int jmp_BngRwAttach(int deviceId, void *name, int a3, int flags, BngCommandCallb
 {
 	if (deviceId >= BANA_MAX_DEVICES)
 		return -100;
+	createCard();
 	callback(deviceId, BNGRW_S_OK, userData);
 	return 1;
 }
@@ -169,7 +224,7 @@ void jmp_Sys_Device_IcCard_Update()
 {
 	if (BANA_STATE[0].waitingTouch)
 	{
-		if (get_card())
+		if (get_card() || config.autoScan)
 		{
 			BANA_STATE[0].waitingTouch = false;
 
@@ -177,8 +232,12 @@ void jmp_Sys_Device_IcCard_Update()
 			memset(&res, 0, sizeof(res));
 
 			res.idType = IDTYPE_BNG;
-			strcpy(res.accessCode, config.accessCode);
-			strcpy(res.chipId, config.chipId);
+			
+			config.accessCode = getProfileString("card", "accessCode", "30764352518498791337", ".\\card.ini");
+            config.chipId = getProfileString("card", "chipId", "7F5C9744F111111143262C3300040610", ".\\card.ini");
+
+			strcpy(res.accessCode, config.accessCode.c_str());
+			strcpy(res.chipId, config.chipId.c_str());
 
 			BANA_STATE[0].waitingTouchCallback(0, BNGRW_S_OK, &res, BANA_STATE[0].waitingTouchUserData);
 		}
